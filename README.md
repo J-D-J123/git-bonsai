@@ -22,10 +22,6 @@ No two trees are alike.
 | Current streak | Pink blossoms |
 | Yesterday's count | Petals drifting down in the animation |
 
-It follows real tree rules: a leader trunk grows upward in a gentle curve, main branches reach
-outward and fork into twigs, nothing grows downward, and leaves sit at the tips. Shoots that would
-leave the bonsai's dome or grow into another branch get **pruned** and turn into denser foliage.
-
 ## Add it to your profile
 
 1. Copy [examples/profile-workflow.yml](examples/profile-workflow.yml) into your profile repo
