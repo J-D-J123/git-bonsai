@@ -1,0 +1,39 @@
+# Copy into your profile repository as .github/workflows/bonsai.yml, then embed
+# <img src="bonsai/bonsai.gif" width="256" alt="My bonsai"> in its README.md.
+name: Bonsai
+
+on:
+  schedule:
+    # Just after midnight UTC, so the tree grows from the day that just ended.
+    - cron: "30 0 * * *"
+  workflow_dispatch:
+  push:
+    paths: [.github/workflows/bonsai.yml]
+
+permissions:
+  contents: write
+
+concurrency: bonsai
+
+jobs:
+  bonsai:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: J-D-J123/git-bonsai@v1
+        with:
+          output-dir: bonsai
+          qrng-api-key: ${{ secrets.QRNG_API_KEY }}   # optional
+      - name: Commit the bonsai if it changed
+        shell: bash
+        run: |
+          git add bonsai/bonsai.gif bonsai/tree.json
+          if git diff --cached --quiet; then
+            echo "The bonsai is unchanged; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --quiet --message "bonsai: grow the day's bonsai"
+          git pull --rebase --quiet
+          git push --quiet

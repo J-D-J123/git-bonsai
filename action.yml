@@ -1,0 +1,39 @@
+name: git-bonsai
+description: Grow a living pixel-art bonsai from your GitHub contributions, seeded by quantum randomness.
+author: J-D-J123
+branding:
+  icon: feather
+  color: green
+
+inputs:
+  login:
+    description: Account whose contributions grow the tree.
+    default: ${{ github.repository_owner }}
+  output-dir:
+    description: Folder that receives bonsai.gif, bonsai.png and tree.json (the saved tree).
+    default: bonsai
+  token:
+    description: Token for reading public contributions; the built-in token is enough.
+    default: ${{ github.token }}
+  qrng-api-key:
+    description: Optional ANU quantum RNG key. Without it, growth uses the OS's random source.
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Install Pillow and NumPy
+      shell: bash
+      run: |
+        python3 -m venv "$RUNNER_TEMP/bonsai-venv"
+        "$RUNNER_TEMP/bonsai-venv/bin/pip" install --quiet pillow numpy
+    - name: Grow the bonsai
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+        QRNG_API_KEY: ${{ inputs.qrng-api-key }}
+        BONSAI_LOGIN: ${{ inputs.login }}
+        BONSAI_OUT: ${{ inputs.output-dir }}
+      run: |
+        "$RUNNER_TEMP/bonsai-venv/bin/python" "$GITHUB_ACTION_PATH/bonsai.py" \
+          --login "$BONSAI_LOGIN" --out "$BONSAI_OUT"
